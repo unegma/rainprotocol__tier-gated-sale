@@ -21,7 +21,7 @@ export async function tierGatedSale() {
       imageUrl: 'https://thumbs.dreamstime.com/b/gold-badge-5392868.jpg',
       imageHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
     },
-    tier: '0xcd953b94999808ee07a33860dd46z689580c90cf4', // this config is needed? // todo check this config
+    tier: '0xcd953b94999808ee07a33860dd46689580c90cf4', // this config is needed? // todo check this config
     minimumStatus: 0,
     maxPerAddress: 1, // let's only let people have 2 for this tutorial
     transferrable: 0,
@@ -86,7 +86,7 @@ export async function tierGatedSale() {
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const address = await signer.getAddress();
-    console.log("Account:", address);
+    console.log("Your Account Address:", address);
 
     // ##########################
     // ### Deploy gated NFT
@@ -100,7 +100,7 @@ export async function tierGatedSale() {
     gatedNFTState.royaltyRecipient = address;
 
     console.log(
-      "Creating GatedNFT with the following State:",
+      "Creating GatedNFT for Gating Sale with the following State:",
       gatedNFTState,
     );
 
@@ -117,7 +117,7 @@ export async function tierGatedSale() {
     tierState.erc721 = gatedNFTContract.address; // set tier to use address of token above
 
     console.log(
-      "Creating Tier Contract with the following State:",
+      "Creating Tier Contract (using GatedNFT) with the following State:",
       tierState,
     );
 
@@ -195,7 +195,7 @@ export async function tierGatedSale() {
     saleState.recipient = address;
 
     console.log(
-        "Creating Sale with the following State:",
+        "Creating Sale (Using Tier contract which uses GatedNFT) with the following State:",
         saleState,
         redeemableState
     );
@@ -213,32 +213,39 @@ export async function tierGatedSale() {
     // ### Interact with your newly deployed ecosystem
 
     let price = await saleContract.calculatePrice(ethers.utils.parseUnits("100", erc20decimals));
+    // todo check the price is correct
     console.log(`Check the Price of tokens in the Sale: ${price}`);
 
     // configure buy for the sale (We have set this to Matic which is also used for paying gas fees, but this could easily be set to usdcc or some other token)
     const buyConfig = {
       feeRecipient: address,
-      fee: 0.1,
-      minimumUnits: 1000,
-      desiredUnits: 1000,
-      maximumPrice: 1000,
+      fee: price, // todo should this be price
+      minimumUnits: 1000000, //1 million
+      desiredUnits: 1000000,
+      maximumPrice: price*10, // TODO VERY ARBITRARY
     }
 
     try {
-      saleContract.buy(buyConfig)
+      console.log(`Buying with parameters:`, buyConfig);
+      const buyStatus = await saleContract.buy(buyConfig);
     } catch (err) {
-      console.log(`This should have failed because you don't have one of the NFTs required for taking part`)
+      console.log(`This should have failed because you don't have one of the NFTs required for taking part`, buyStatus);
     }
 
     // mint and send to you
+    console.log(`Minting you a required NFT to take part in Sale:`);
     const result = await gatedNFTContract.mint(address); // get one of the NFTs needed to take part in the sale
-    console.log(result);
+    console.log(`Result of NFT Minting:`, result);
 
     try {
-      saleContract.buy(buyConfig)
+      console.log(`Buying with parameters:`, buyConfig);
+      const buyStatus = saleContract.buy(buyConfig);
+      console.log(`This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
     } catch (err) {
-      console.log(`This should never be reached`)
+      console.log(`This should never be reached`);
     }
+
+    console.log("Done");
 
   } catch (err) {
     console.log(err);
