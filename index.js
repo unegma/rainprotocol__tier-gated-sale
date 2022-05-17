@@ -3,6 +3,8 @@ import { ethers, BigNumber } from "ethers";
 const CHAIN_ID = 80001; // Mumbai (Polygon Testnet) Chain ID
 
 // todo move configurations and code to different files?
+// todo remember to remind user to approve transactions at each stage
+// todo remember to remind user who they will be at each point (dev vs user)
 
 // tutorial:
 export async function tierGatedSale() {
