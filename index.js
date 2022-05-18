@@ -88,7 +88,10 @@ export async function tierGatedSale() {
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
     const address = await signer.getAddress();
-    console.log("Your Account Address:", address);
+    console.log("Info: Your Account Address:", address);
+
+    // separator
+    console.log('------------------------------');
 
     // ##########################
     // ### Deploy gated NFT
@@ -114,6 +117,9 @@ export async function tierGatedSale() {
 
     console.log(`Result: GatedNFT Contract`, gatedNFTContract);
 
+    // separator
+    console.log('------------------------------');
+
     // ###################################################
     // ### Deploy Tier Contract to be used in Sale
     tierState.erc721 = gatedNFTContract.address; // set tier to use address of token above
@@ -130,6 +136,9 @@ export async function tierGatedSale() {
     );
 
     console.log(`Result: Tier Contract`, tierContract);
+
+    // separator
+    console.log('------------------------------');
 
     // ####################################
     // ### Sale code below this line
@@ -197,9 +206,9 @@ export async function tierGatedSale() {
     saleState.recipient = address;
 
     console.log(
-        "Creating: Sale (Using Tier contract which uses GatedNFT) with the following State:",
-        saleState,
-        redeemableState
+      "Creating: Sale (Using Tier contract which uses GatedNFT) with the following State:",
+      saleState,
+      redeemableState
     );
 
     // todo should this be then passed to the constructor in the sdk or used as is?
@@ -210,6 +219,9 @@ export async function tierGatedSale() {
     );
 
     console.log('Result: Sale Contract:', saleContract); // the Sale contract and corresponding address
+
+    // separator
+    console.log('------------------------------');
 
     // #####################################################
     // ### Interact with your newly deployed ecosystem
@@ -233,6 +245,8 @@ export async function tierGatedSale() {
       const buyStatus = await saleContract.buy(buyConfig);
       console.log(`Info: This should never be reached`, buyStatus);
     } catch (err) {
+      // separator
+      console.log('------------------------------');
       // console log the error which should be a revert
       console.log(`Info: This should have failed because you don't have one of the NFTs required for taking part`, err);
     }
@@ -247,13 +261,19 @@ export async function tierGatedSale() {
       const buyStatus = await saleContract.buy(buyConfig);
       console.log(`Info: This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
     } catch (err) {
+      // separator
+      console.log('------------------------------');
       console.log(`Info: This should never be reached`);
     }
 
+    // separator
+    console.log('------------------------------');
    console.log("Info: Done");
 
   } catch (err) {
-    console.log(err);
+    // separator
+    console.log('------------------------------');
+    console.log(`Info: Something went wrong:`, err);
   }
 
 
