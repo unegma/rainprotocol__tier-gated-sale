@@ -241,33 +241,35 @@ export async function tierGatedSale() {
 
 
     try {
-      console.log(`Info: Buying with parameters:`, buyConfig);
+      console.log(`Info: Buying from Sale with parameters:`, buyConfig);
       const buyStatus = await saleContract.buy(buyConfig);
       console.log(`Info: This should never be reached`, buyStatus);
     } catch (err) {
-      // separator
-      console.log('------------------------------');
       // console log the error which should be a revert
       console.log(`Info: This should have failed because you don't have one of the NFTs required for taking part`, err);
     }
+
+    // separator
+    console.log('------------------------------');
 
     // mint and send to you
     console.log(`Info: Minting you a required NFT to take part in Sale:`);
     const result = await gatedNFTContract.mint(address); // get one of the NFTs needed to take part in the sale
     console.log(`Result: of NFT Minting:`, result);
 
+    // separator
+    console.log('------------------------------');
+
     try {
-      console.log(`Info: Buying with parameters:`, buyConfig);
+      console.log(`Info: Buying from Sale with parameters:`, buyConfig);
       const buyStatus = await saleContract.buy(buyConfig);
       console.log(`Info: This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
     } catch (err) {
-      // separator
-      console.log('------------------------------');
-      console.log(`Info: This should never be reached`);
+      console.log(`Info: Failed, this should never have been reached, error:`, err);
     }
 
     // separator
-    console.log('------------------------------');
+   console.log('------------------------------');
    console.log("Info: Done");
 
   } catch (err) {
