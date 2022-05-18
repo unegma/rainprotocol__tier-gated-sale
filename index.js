@@ -39,7 +39,7 @@ export async function tierGatedSale() {
     // todo may need 8
     // tier 1 means the user needs 1 token, tier 2, 2 tokens (however, we have set users to only be allowed one, so only tier 1 works here)
     tierValues: [
-      1,2,3,4,5,6,7,8 // any tiers beyond 1 won't matter because there will only ever be one of these tokens in existence
+      1,2,2,2,2,2,2,2 // any tiers beyond 1 won't matter because there will only ever be one of these tokens in existence
     ]
   }
 
@@ -102,7 +102,7 @@ export async function tierGatedSale() {
     gatedNFTState.royaltyRecipient = address;
 
     console.log(
-      "Creating GatedNFT for Gating Sale with the following State:",
+      "Creating: GatedNFT for Gating Sale with the following State:",
       gatedNFTState,
     );
 
@@ -112,14 +112,14 @@ export async function tierGatedSale() {
       gatedNFTState
     );
 
-    console.log(`GatedNFT Contract`, gatedNFTContract);
+    console.log(`Result: GatedNFT Contract`, gatedNFTContract);
 
     // ###################################################
     // ### Deploy Tier Contract to be used in Sale
     tierState.erc721 = gatedNFTContract.address; // set tier to use address of token above
 
     console.log(
-      "Creating Tier Contract (using GatedNFT) with the following State:",
+      "Creating: Tier Contract (using GatedNFT) with the following State:",
       tierState,
     );
 
@@ -129,7 +129,7 @@ export async function tierGatedSale() {
       tierState
     );
 
-    console.log(`Tier Contract`, tierContract);
+    console.log(`Result: Tier Contract`, tierContract);
 
     // ####################################
     // ### Sale code below this line
@@ -197,7 +197,7 @@ export async function tierGatedSale() {
     saleState.recipient = address;
 
     console.log(
-        "Creating Sale (Using Tier contract which uses GatedNFT) with the following State:",
+        "Creating: Sale (Using Tier contract which uses GatedNFT) with the following State:",
         saleState,
         redeemableState
     );
@@ -209,49 +209,54 @@ export async function tierGatedSale() {
       redeemableState
     );
 
-    console.log('Sale Contract:', saleContract); // the Sale contract and corresponding address
+    console.log('Result: Sale Contract:', saleContract); // the Sale contract and corresponding address
 
     // #####################################################
     // ### Interact with your newly deployed ecosystem
 
     let price = await saleContract.calculatePrice(ethers.utils.parseUnits("100", erc20decimals));
     // todo check the price is correct
-    console.log(`Check the Price of tokens in the Sale: ${price}`);
+    console.log(`Info: Checking the Price of tokens in the Sale: ${price}`);
 
     // configure buy for the sale (We have set this to Matic which is also used for paying gas fees, but this could easily be set to usdcc or some other token)
     const buyConfig = {
       feeRecipient: address,
-      fee: price, // todo should this be price
-      minimumUnits: 1000000, //1 million
+      fee: price*0.01, // 1 percent fee for the platform
+      minimumUnits: 1000000, // 1 million??
       desiredUnits: 1000000,
-      maximumPrice: price*10, // TODO VERY ARBITRARY
+      maximumPrice: price*10, // TODO VERY ARBITRARY ETHERS CONSTANT MAX AMOUNT
     }
 
+
     try {
-      console.log(`Buying with parameters:`, buyConfig);
+      console.log(`Info: Buying with parameters:`, buyConfig);
       const buyStatus = await saleContract.buy(buyConfig);
+      console.log(`Info: This should never be reached`, buyStatus);
     } catch (err) {
-      console.log(`This should have failed because you don't have one of the NFTs required for taking part`, buyStatus);
+      // console log the error which should be a revert
+      console.log(`Info: This should have failed because you don't have one of the NFTs required for taking part`, err);
     }
 
     // mint and send to you
-    console.log(`Minting you a required NFT to take part in Sale:`);
+    console.log(`Info: Minting you a required NFT to take part in Sale:`);
     const result = await gatedNFTContract.mint(address); // get one of the NFTs needed to take part in the sale
-    console.log(`Result of NFT Minting:`, result);
+    console.log(`Result: of NFT Minting:`, result);
 
     try {
-      console.log(`Buying with parameters:`, buyConfig);
-      const buyStatus = saleContract.buy(buyConfig);
-      console.log(`This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
+      console.log(`Info: Buying with parameters:`, buyConfig);
+      const buyStatus = await saleContract.buy(buyConfig);
+      console.log(`Info: This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
     } catch (err) {
-      console.log(`This should never be reached`);
+      console.log(`Info: This should never be reached`);
     }
 
-    console.log("Done");
+   console.log("Info: Done");
 
   } catch (err) {
     console.log(err);
   }
+
+
 }
 
 tierGatedSale();
