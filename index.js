@@ -1,4 +1,3 @@
-import * as rainSDK from "rain-sdk";
 import { ethers, BigNumber } from "ethers";
 import deployGatedNFTContract from "./deployGatedNFTContract.js";
 import deployTierContract from "./deployTierContract.js";

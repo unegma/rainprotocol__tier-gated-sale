@@ -1,6 +1,8 @@
 import * as rainSDK from "rain-sdk";
 
 export default async function deploySaleContract(signer, tierContract) {
+  const address = await signer.getAddress()
+
   // config for the sale
   const erc20decimals = 18; // See here for more info: https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals
   const staticPrice = ethers.utils.parseUnits("100", erc20decimals);
