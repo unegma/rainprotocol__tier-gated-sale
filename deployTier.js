@@ -1,6 +1,6 @@
 import * as rainSDK from "rain-sdk";
 
-export default async function deployTierContract(signer, gatedNFTContract) {
+export default async function deployTier(signer, gatedNFTContract) {
   const tierState = {
     erc721: gatedNFTContract.address, // this will be set to the address of the GatedNFT
     // tier 1 means the user needs 1 token, tier 2, 2 tokens (however, we have set users to only be allowed one, so only tier 1 works here)

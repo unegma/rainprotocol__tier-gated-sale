@@ -1,6 +1,6 @@
 import * as rainSDK from "rain-sdk";
 
-export default async function deploySaleContract(signer, tierContract) {
+export default async function deploySale(signer, tierContract) {
   const address = await signer.getAddress()
 
   // config for the sale
@@ -25,11 +25,10 @@ export default async function deploySaleContract(signer, tierContract) {
       distributor: "0x0000000000000000000000000000000000000000", // distributor address
       initialSupply: ethers.utils.parseUnits("1000", erc20decimals), // initial rTKN supply
     },
-    tier: undefined, // tier contract address (used for gating), will be set to the address of the tier contract after deployment
-    minimumTier: 0, // minimum tier a user needs to take part
+    tier: tierContract.address, // to gate the sale, we are actually setting the tiering on the token (which will be bought from the sale) itself
+    minimumTier: 0, // minimum tier a user needs to take part // todo may need to be 1 (although this could be equal to 2 tokens)
     distributionEndForwardingAddress: "0x0000000000000000000000000000000000000000" // the rTKNs that are not sold get forwarded here (0x00.. will burn them)
   }
-  redeemableState.tier = tierContract.address; // to gate the sale, we are actually setting the tiering on the token (which will be bought from the sale) itself
 
   // Opcode Configurations
   saleState.canStartStateConfig = {

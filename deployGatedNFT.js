@@ -1,6 +1,6 @@
 import * as rainSDK from "rain-sdk";
 
-export default async function deployGatedNFTContract(signer) {
+export default async function deployGatedNFT(signer) {
   const address = await signer.getAddress()
 
   // config for our (not really gated) NFT used in gating

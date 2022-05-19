@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers";
-import deployGatedNFTContract from "./deployGatedNFTContract.js";
-import deployTierContract from "./deployTierContract.js";
-import deploySaleContract from "./deploySaleContract.js";
+import deployGatedNFT from "./deployGatedNFT.js";
+import deployTier from "./deployTier.js";
+import deploySale from "./deploySale.js";
 const CHAIN_ID = 80001; // Mumbai (Polygon Testnet) Chain ID
 
 // tutorial:
@@ -26,15 +26,15 @@ export async function tierGatedSale() {
     console.log('------------------------------'); // separator
 
     // Deploy gated NFT
-    const gatedNFTContract = deployGatedNFTContract(signer);
+    const gatedNFTContract = deployGatedNFT(signer);
     console.log('------------------------------'); // separator
 
     // Deploy Tier Contract to be used in Sale
-    const tierContract = deployTierContract(signer, gatedNFTContract);
+    const tierContract = deployTier(signer, gatedNFTContract);
     console.log('------------------------------'); // separator
 
     // Deploy Sale
-    const saleContract = deploySaleContract(signer, tierContract);
+    const saleContract = deploySale(signer, tierContract);
     console.log('------------------------------'); // separator
 
     // ### Interact with your newly deployed ecosystem
