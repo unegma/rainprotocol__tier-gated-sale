@@ -31,21 +31,21 @@ export async function runTierGatedSale() {
     const saleContract = await deploySale(signer, tierContract); // Deploy Sale
     console.log('------------------------------'); // separator
 
-    // ### Interact with your newly deployed ecosystem
+    // ### Interact with the newly deployed ecosystem
+
+    let price = await saleContract.calculatePrice(ethers.utils.parseUnits("100", erc20decimals));
+    console.log(`Info: Price of tokens in the Sale: ${price}`); // todo check the price is correct
+
+    // configure buy for the sale (We have set this to Matic which is also used for paying gas fees, but this could easily be set to usdcc or some other token)
+    const buyConfig = {
+      feeRecipient: address,
+      fee: price*0.01, // 1 percent fee for the platform
+      minimumUnits: 1000000, // 1 million??
+      desiredUnits: 1000000,
+      maximumPrice: price*10, // TODO VERY ARBITRARY ETHERS CONSTANT MAX AMOUNT // todo why do we set this?
+    }
 
     try { // separate try block as we want to catch the error separately
-      console.log(`Info: Checking the Price of tokens in the Sale: ${price}`); // todo check the price is correct
-      let price = await saleContract.calculatePrice(ethers.utils.parseUnits("100", erc20decimals));
-
-      // configure buy for the sale (We have set this to Matic which is also used for paying gas fees, but this could easily be set to usdcc or some other token)
-      const buyConfig = {
-        feeRecipient: address,
-        fee: price*0.01, // 1 percent fee for the platform
-        minimumUnits: 1000000, // 1 million??
-        desiredUnits: 1000000,
-        maximumPrice: price*10, // TODO VERY ARBITRARY ETHERS CONSTANT MAX AMOUNT
-      }
-
       console.log(`Info: Buying from Sale with parameters:`, buyConfig);
       await saleContract.buy(buyConfig); // this should trigger the catch below
     } catch (err) {
