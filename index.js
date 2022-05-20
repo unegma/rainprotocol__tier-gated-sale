@@ -1,4 +1,4 @@
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import deployGatedNFT from "./deployGatedNFT.js";
 import deployTier from "./deployTier.js";
 import deploySale from "./deploySale.js";
@@ -61,8 +61,8 @@ export async function runTierGatedSale() {
     const buyStatus = await saleContract.buy(buyConfig);
     console.log(`Info: This should have passed because you do have one of the NFTs required for taking part`, buyStatus);
 
-   console.log('------------------------------'); // separator
-   console.log("Info: Done");
+    console.log('------------------------------'); // separator
+    console.log("Info: Done");
 
   } catch (err) {
     // separator

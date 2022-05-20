@@ -13,6 +13,6 @@ export default async function deployTier(signer, gatedNFTContract) {
     console.log(`Result: Tier Contract`, tierContract);
     return tierContract;
   } catch (err) {
-    console.log(`Error deploying Tier`, err);
+    throw new Error('DeployTierError', `Error deploying Tier`, err);
   }
 }

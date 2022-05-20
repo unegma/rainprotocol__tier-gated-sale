@@ -1,4 +1,5 @@
 import * as rainSDK from "rain-sdk";
+import { BigNumber } from "ethers";
 
 export default async function deployGatedNFT(signer) {
   try {
@@ -31,6 +32,6 @@ export default async function deployGatedNFT(signer) {
     console.log(`Result: GatedNFT Contract`, gatedNFTContract);
     return gatedNFTContract;
   } catch (err) {
-    console.log(`Error deploying GatedNFT`, err);
+    throw new Error('DeployGatedNFTError', `Error deploying GatedNFT`, err);
   }
 }

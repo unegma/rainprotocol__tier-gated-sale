@@ -1,4 +1,5 @@
 import * as rainSDK from "rain-sdk";
+import { ethers } from "ethers";
 
 export default async function deploySale(signer, tierContract) {
   try {
@@ -72,6 +73,6 @@ export default async function deploySale(signer, tierContract) {
     console.log('Result: Sale Contract:', saleContract); // the Sale contract and corresponding address
     return saleContract;
   } catch (err) {
-    console.log(`Error deploying Sale`, err);
+    throw new Error('DeploySaleError', `Error deploying Sale`, err);
   }
 }
