@@ -3,6 +3,7 @@ import deployGatedNFT from "./deployGatedNFT.js";
 import deployTier from "./deployTier.js";
 import deploySale from "./deploySale.js";
 const CHAIN_ID = 80001; // Mumbai (Polygon Testnet) Chain ID
+const ERC20_DECIMALS = 18; // See here for more info: https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals
 
 // tutorial:
 export async function runTierGatedSale() {
@@ -33,16 +34,17 @@ export async function runTierGatedSale() {
 
     // ### Interact with the newly deployed ecosystem
 
-    let price = await saleContract.calculatePrice(ethers.utils.parseUnits("100", erc20decimals));
+    // TODO DOES THIS NEED TO BE THE SAME AS minimumUnits and desiredUnits
+    let price = await saleContract.calculatePrice(ethers.utils.parseUnits("10", ERC20_DECIMALS)); // THIS WILL CALCULATE THE PRICE FOR **YOU** AND WILL TAKE INTO CONSIDERATION THE WALLETCAP, if the wallet cap is passed, the price will be so high that the user can't buy the token (you will see a really long number)
     console.log(`Info: Price of tokens in the Sale: ${price}`); // todo check the price is correct
 
     // configure buy for the sale (We have set this to Matic which is also used for paying gas fees, but this could easily be set to usdcc or some other token)
     const buyConfig = {
       feeRecipient: address,
-      fee: price*0.01, // 1 percent fee for the platform
-      minimumUnits: 1000000, // 1 million??
-      desiredUnits: 1000000,
-      maximumPrice: price*10, // TODO VERY ARBITRARY ETHERS CONSTANT MAX AMOUNT // todo why do we set this?
+      fee: 0.001, // 1 percent fee for the platform // TODO IS THIS NEEDED TO BE toNumber(). no // todo why does this work as 0.1 if eth doesn't have decimals
+      minimumUnits: 1,
+      desiredUnits: 1,
+      maximumPrice: 1, // 0.01 matic? // TODO VERY ARBITRARY ETHERS CONSTANT MAX AMOUNT // todo why do we set this? // TODO IS THIS NEEDED TO BE toNumber()
     }
 
     try { // separate try block as we want to catch the error separately

@@ -17,12 +17,12 @@ export default async function deployGatedNFT(signer) {
         imageHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
       },
       tier: '0xcd953b94999808ee07a33860dd46689580c90cf4', // this config is needed? // todo check this config
-      minimumStatus: 0,
+      minimumStatus: 0, // ??
       maxPerAddress: 1, // let's only let people have 2 for this tutorial
-      transferrable: 0,
-      maxMintable: 1, // for the purposes of this tutorial, we are only allowing there to be 1 token is existance
+      transferrable: 0, // false
+      maxMintable: 1000,
       royaltyRecipient: "",
-      royaltyBPS: 10
+      royaltyBPS: 10 // ??
     }
     gatedNFTState.royaltyBPS = BigNumber.from(Math.floor(gatedNFTState.royaltyBPS * 100)); // convert royaltyBPS to BigNumber format
     gatedNFTState.royaltyRecipient = address; // set YOU to be the recipient

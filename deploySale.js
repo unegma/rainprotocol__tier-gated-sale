@@ -1,14 +1,14 @@
 import * as rainSDK from "rain-sdk";
 import { ethers } from "ethers";
+const ERC20_DECIMALS = 18; // See here for more info: https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals
 
 export default async function deploySale(signer, tierContract) {
   try {
     const address = await signer.getAddress()
 
     // config for the sale
-    const erc20decimals = 18; // See here for more info: https://docs.openzeppelin.com/contracts/3.x/erc20#a-note-on-decimals
-    const staticPrice = ethers.utils.parseUnits("100", erc20decimals);
-    const walletCap = ethers.utils.parseUnits("10", erc20decimals);
+    const staticPrice = ethers.utils.parseUnits("1", ERC20_DECIMALS);
+    const walletCap = ethers.utils.parseUnits("100", ERC20_DECIMALS);
     const saleState = {
       canStartStateConfig: undefined, // config for the start of the Sale (see opcodes section below)
       canEndStateConfig: undefined, // config for the end of the Sale (see opcodes section below)
@@ -17,15 +17,15 @@ export default async function deploySale(signer, tierContract) {
       reserve: "0x0000000000000000000000000000000000001010", // the reserve token contract address (Polygon Testnet MATIC)
       saleTimeout: 100, // this will be 100 blocks
       cooldownDuration: 100, // this will be 100 blocks
-      minimumRaise: ethers.utils.parseUnits("1000", erc20decimals), // minimum to complete a Raise
-      dustSize: ethers.utils.parseUnits("0", erc20decimals),
+      minimumRaise: ethers.utils.parseUnits("10000", ERC20_DECIMALS), // minimum to complete a Raise
+      dustSize: ethers.utils.parseUnits("0", ERC20_DECIMALS),
     };
     const redeemableState = {
       erc20Config: { // config for the redeemable token (rTKN) which participants will get in exchange for reserve tokens
         name: "Raise token", // the name of the rTKN
         symbol: "rTKN", // the symbol for your rTKN
         distributor: "0x0000000000000000000000000000000000000000", // distributor address
-        initialSupply: ethers.utils.parseUnits("1000", erc20decimals), // initial rTKN supply
+        initialSupply: ethers.utils.parseUnits("1000000", ERC20_DECIMALS), // 1million initial rTKN supply // todo check if this interacts with minimumRaise
       },
       tier: tierContract.address, // to gate the sale, we are actually setting the tiering on the token (which will be bought from the sale) itself
       minimumTier: 0, // minimum tier a user needs to take part // todo may need to be 1 (although this could be equal to 2 tokens)
