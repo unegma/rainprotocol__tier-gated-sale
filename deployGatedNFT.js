@@ -27,7 +27,7 @@ export default async function deployGatedNFT(signer) {
     gatedNFTState.royaltyBPS = BigNumber.from(Math.floor(gatedNFTState.royaltyBPS * 100)); // convert royaltyBPS to BigNumber format
     gatedNFTState.royaltyRecipient = address; // set YOU to be the recipient
 
-    console.log("Creating: GatedNFT for Gating Sale with the following State:", gatedNFTState,);
+    console.log("Creating: GatedNFT for Gating Sale with the following State:", gatedNFTState);
     const gatedNFTContract = await rainSDK.GatedNFT.deploy(signer, gatedNFTState); // todo should this be then passed to the constructor in the sdk or used as is?
     console.log(`Result: GatedNFT Contract`, gatedNFTContract);
     return gatedNFTContract;
